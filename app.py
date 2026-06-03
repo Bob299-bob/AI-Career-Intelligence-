@@ -153,7 +153,9 @@ if st.session_state.page=="Document_chat":
             st.session_state.messages.append({"role": "user","content": data})
             pdf_text=pdf_extract(data_path)
             index,pdf=RAG(pdf_text)
-            answer=chat(data,pdf)
+            chunks = Retrieve(data, index, pdf)
+            context = "\n".join(chunks[:3])   # important limit
+            answer = chat(data, context)
             st.session_state.messages.append({"role": "assistant","content": answer})    
             st.rerun()     
     else:
