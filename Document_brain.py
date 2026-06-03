@@ -79,7 +79,7 @@ Question:
     return response.choices[0].message.content
 #skillExtract agent
 def extract_skills(pdf, query):
-    pdf=pdf[:4000]
+    pdf=pdf[:2000]
     prompt = f"""
 You are an ATS and skill analysis assistant.
 
@@ -103,7 +103,9 @@ If not CV, Resume then tell him about the document and say sorry to him
         model="llama-3.1-8b-instant",
         messages=[
             {"role": "user", "content": prompt}
-        ]
+        ],
+        temperature=0.3,
+        max_tokens=600
     )
 
     return response.choices[0].message.content
@@ -114,7 +116,7 @@ def ATS(pdf,query):
     two_q=model.encode([query]).astype('float32')
     score=cosine_similarity(one_pd,two_q)
     score=score[0][0]*100
-    pdf=pdf[:4000]
+    pdf=pdf[:2000]
     prompt = f"""
 You are an expert Resume Screening AI.
 
@@ -173,14 +175,16 @@ Apology:
         messages=[{
             'role':'user',
             'content':prompt
-        }]
+        }],
+        temperature=0.3,
+        max_tokens=600
     )
     ans=response.choices[0].message.content
     return score,ans
 
 #Document_chat agent
 def chat(data,pdf):
-    pdf=pdf[:4000]
+    pdf=pdf[:2000]
     prompt=f"""
 You are an expert of AI
 Document:
@@ -196,7 +200,9 @@ Rule:
 """
     response=client.chat.completions.create(
         model='llama-3.1-8b-instant',
-        messages=[{'role':'user','content':prompt}]
+        messages=[{'role':'user','content':prompt}],
+        temperature=0.3,
+        max_tokens=600
     )
     answer=response.choices[0].message.content
     return answer
