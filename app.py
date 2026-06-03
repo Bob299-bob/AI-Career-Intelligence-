@@ -118,7 +118,7 @@ if st.sidebar.button('Skill Gap Analyzer'):
         index,pdf=RAG(pdf_text) 
         chunks = Retrieve(query, index, pdf)
         context = "\n".join(chunks[:3]) 
-        answer=extract_skills(pdf,query)
+        answer=extract_skills(context,query)
         st.success(answer)
     else:
         st.error('Please fill above fields')
