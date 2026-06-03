@@ -79,6 +79,7 @@ Question:
     return response.choices[0].message.content
 #skillExtract agent
 def extract_skills(pdf, query):
+    pdf=pdf[:4000]
     prompt = f"""
 You are an ATS and skill analysis assistant.
 
@@ -113,6 +114,7 @@ def ATS(pdf,query):
     two_q=model.encode([query]).astype('float32')
     score=cosine_similarity(one_pd,two_q)
     score=score[0][0]*100
+    pdf=pdf[:4000]
     prompt = f"""
 You are an expert Resume Screening AI.
 
@@ -178,6 +180,7 @@ Apology:
 
 #Document_chat agent
 def chat(data,pdf):
+    pdf=pdf[:4000]
     prompt=f"""
 You are an expert of AI
 Document:
