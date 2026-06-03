@@ -115,7 +115,9 @@ if st.sidebar.button('Skill Gap Analyzer'):
     st.session_state.page="skill"
     if data_path and query is not None:
         pdf_text=pdf_extract(data_path)
-        index,pdf=RAG(pdf_text)    
+        index,pdf=RAG(pdf_text) 
+        chunks = Retrieve(query, index, pdf)
+        context = "\n".join(chunks[:3]) 
         answer=extract_skills(pdf,query)
         st.success(answer)
     else:
@@ -125,7 +127,9 @@ if st.sidebar.button('Resume Analyzer'):
     if data_path and query is not None:
         pdf_text=pdf_extract(data_path)
         index,pdf=RAG(pdf_text)
-        score,ans=ATS(pdf,query)
+        chunks = Retrieve(query, index, pdf)
+        context = "\n".join(chunks[:3]) 
+        score,ans=ATS(context,query)
         st.success(f"ATS score is  {score}")
         st.success(ans)
     else:
