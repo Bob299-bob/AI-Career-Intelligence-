@@ -88,15 +88,19 @@ Resume:
 
 Target Role:
 {query}
+Instructions:
 
-First check it is CV,Resume 
-If yes then,
-Return:
-1. Matching Skills
-2. Missing Skills
-3. Skill Match Percentage
+1. First determine whether the document is a Resume/CV.
 
-If not CV, Resume then tell him about the document and say sorry to him
+2. If the document IS a Resume/CV:
+    - Matching Skills
+    - Missing Skills
+    - Skill Match Percentage
+
+3. If the document is NOT a Resume/CV:
+   - State what type of document it appears to be.
+   - Politely apologize.
+
 """
 
     response = client.chat.completions.create(
