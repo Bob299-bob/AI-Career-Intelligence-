@@ -79,8 +79,6 @@ Question:
     return response.choices[0].message.content
 #skillExtract agent
 def extract_skills(pdf, query):
-    chunks=Retrieve(query,index,pdf)
-    pdf="\n".join(chunks)
     pdf=pdf[:2000]
     prompt = f"""
 You are an ATS and skill analysis assistant.
@@ -114,12 +112,6 @@ If not CV, Resume then tell him about the document and say sorry to him
 #Resume agent
 from sklearn.metrics.pairwise import cosine_similarity
 def ATS(pdf,query):
-    one_pd=model.encode(pdf).astype('float32')
-    two_q=model.encode([query]).astype('float32')
-    score=cosine_similarity(one_pd,two_q)
-    score=score[0][0]*100
-    chunks=Retrieve(query,index,pdf)
-    pdf="\n".join(chunks)
     pdf=pdf[:2000]
     prompt = f"""
 You are an expert Resume Screening AI.
