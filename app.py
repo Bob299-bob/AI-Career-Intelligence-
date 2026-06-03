@@ -129,8 +129,7 @@ if st.sidebar.button('Resume Analyzer'):
         index,pdf=RAG(pdf_text)
         chunks = Retrieve(query, index, pdf)
         context = "\n".join(chunks[:3]) 
-        score,ans=ATS(context,query)
-        st.success(f"ATS score is  {score}")
+        ans=ATS(context,query)
         st.success(ans)
     else:
          st.error('Please fill above fields') 
