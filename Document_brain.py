@@ -176,7 +176,7 @@ Apology:
         max_tokens=600
     )
     ans=response.choices[0].message.content
-    return score,ans
+    return ans
 
 #Document_chat agent
 def chat(data,pdf):
