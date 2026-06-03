@@ -30,9 +30,20 @@ model=SentenceTransformer(
 
 #Creating RAG SYSTEM
 import faiss
+import numpy as np
 def RAG(pdf_text):
+    if not pdf_text.strip():
+        st.error("No text found in PDF. Please upload a text-based PDF.")
+        st.stop()
     pdf=splitter.split_text(pdf_text)
-    pdf_embedding=model.encode(pdf).astype('float32')
+    if len(pdf) == 0:
+        st.error("No chunks generated from PDF.")
+        st.stop()
+    pdf_embedding=model.encode(pdf)
+    pdf_embedding = np.array(pdf_embedding, dtype=np.float32)
+    print("Embedding Shape:", pdf_embedding.shape)
+    if pdf_embedding.ndim == 1:
+        pdf_embedding = pdf_embedding.reshape(1, -1)
     faiss.normalize_L2(pdf_embedding)
     index=faiss.IndexFlatIP(pdf_embedding.shape[1])
     index.add(pdf_embedding)
