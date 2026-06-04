@@ -31,16 +31,15 @@ model=SentenceTransformer(
 #Creating RAG SYSTEM
 import faiss
 def RAG(pdf_text):
-  if pdf_text!="":
-    pdf=splitter.split_text(pdf_text)
-    pdf_embedding=model.encode(pdf).astype('float32')
-    faiss.normalize_L2(pdf_embedding)
-    index=faiss.IndexFlatIP(pdf_embedding.shape[1])
-    index.add(pdf_embedding)
-    return index,pdf
-  else:
-      st.error('Sorry cant help you at this time')
-      st.stop()
+    if pdf_text!="":
+        pdf=splitter.split_text(pdf_text)
+        pdf_embedding=model.encode(pdf).astype('float32')
+        faiss.normalize_L2(pdf_embedding)
+        index=faiss.IndexFlatIP(pdf_embedding.shape[1])
+        index.add(pdf_embedding)
+        return index,pdf
+    else:
+        st.error('Your pdf is corrupted')
 
 
 #Creating Retrieval System
@@ -101,13 +100,11 @@ If not CV, Resume then tell him about the document and say sorry to him
     return response.choices[0].message.content
 #Resume agent
 from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
 def ATS(pdf,query):
-    new_q=query
-    one_pd=model.encode([pdf]).astype('float32')
+    one_pd=model.encode(pdf).astype('float32')
     two_q=model.encode([query]).astype('float32')
     score=cosine_similarity(one_pd,two_q)
-    score=np.max(score)*100
+    score=score[0][0]*100
     prompt = f"""
 You are an expert Resume Screening AI.
 
@@ -115,7 +112,7 @@ Document:
 {pdf}
 
 User Query:
-{new_q}
+{query}
 
 Instructions:
 
