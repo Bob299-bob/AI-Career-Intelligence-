@@ -116,7 +116,7 @@ if st.sidebar.button('Skill Gap Analyzer'):
     if data_path and query is not None:
         pdf_text=pdf_extract(data_path)
         index,pdf=RAG(pdf_text)
-        if len(pdf)>2000:
+        if len(pdf)>4000:
             chunks = Retrieve(query,index,pdf)
             context = "\n".join(chunks[:3])
         else:
@@ -131,8 +131,13 @@ if st.sidebar.button('Resume Analyzer'):
     if data_path and query is not None:
         pdf_text=pdf_extract(data_path)
         index,pdf=RAG(pdf_text)
-        chunks=Retrieve(query,index,pdf)
-        score,ans=ATS(pdf,query)
+        if len(pdf)>4000:
+            chunks = Retrieve(query,index,pdf)
+            context = "\n".join(chunks[:3])
+        else:
+            chunks=Retrieve(query,index,pdf)
+            context = "\n".join(chunks)
+        score,ans=ATS(context,query)
         st.success(f"ATS score is  {score}")
         st.success(ans)
     else:
@@ -158,7 +163,13 @@ if st.session_state.page=="Document_chat":
             st.session_state.messages.append({"role": "user","content": data})
             pdf_text=pdf_extract(data_path)
             index,pdf=RAG(pdf_text)
-            answer=chat(data,pdf)
+            if len(pdf)>4000:
+                chunks = Retrieve(query,index,pdf)
+                context = "\n".join(chunks[:3])
+            else:
+                chunks=Retrieve(query,index,pdf)
+                context = "\n".join(chunks)
+            answer=chat(data,context)
             st.session_state.messages.append({"role": "assistant","content": answer})    
             st.rerun()     
     else:
