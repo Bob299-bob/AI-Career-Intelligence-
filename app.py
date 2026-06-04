@@ -116,7 +116,7 @@ if st.sidebar.button('Skill Gap Analyzer'):
     if data_path and query is not None:
         pdf_text=pdf_extract(data_path)
         index,pdf=RAG(pdf_text)
-        if len(pdf)>4000:
+        if len(pdf)>6000:
             chunks = Retrieve(query,index,pdf)
             context = "\n".join(chunks[:3])
         else:
@@ -131,7 +131,7 @@ if st.sidebar.button('Resume Analyzer'):
     if data_path and query is not None:
         pdf_text=pdf_extract(data_path)
         index,pdf=RAG(pdf_text)
-        if len(pdf)>4000:
+        if len(pdf)>6000:
             chunks = Retrieve(query,index,pdf)
             context = "\n".join(chunks[:3])
         else:
@@ -163,7 +163,7 @@ if st.session_state.page=="Document_chat":
             st.session_state.messages.append({"role": "user","content": data})
             pdf_text=pdf_extract(data_path)
             index,pdf=RAG(pdf_text)
-            if len(pdf)>4000:
+            if len(pdf)>6000:
                 chunks = Retrieve(query,index,pdf)
                 context = "\n".join(chunks[:3])
             else:
