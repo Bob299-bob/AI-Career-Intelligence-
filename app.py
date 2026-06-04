@@ -116,11 +116,13 @@ if st.sidebar.button('Skill Gap Analyzer'):
     if data_path and query is not None:
         pdf_text=pdf_extract(data_path)
         index,pdf=RAG(pdf_text)
-        chunks=Retrieve(query,index,pdf)
         if len(pdf)>2000:
             chunks = Retrieve(query,index,pdf)
-            pdf = "\n".join(chunks[:3])   # ONLY 2–3 chunks    
-        answer=extract_skills(pdf,query)
+            context = "\n".join(chunks[:3])
+        else:
+            chunks=Retrieve(query,index,pdf)
+            context = "\n".join(chunks)
+        answer=extract_skills(context,query)
         st.success(answer)
     else:
         st.error('Please fill above fields')
