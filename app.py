@@ -116,13 +116,8 @@ if st.sidebar.button('Skill Gap Analyzer'):
     if data_path and query is not None:
         pdf_text=pdf_extract(data_path)
         index,pdf=RAG(pdf_text)
-        if len(pdf)>6000:
-            chunks = Retrieve(query,index,pdf)
-            context = "\n".join(chunks[:3])
-        else:
-            chunks=Retrieve(query,index,pdf)
-            context = "\n".join(chunks)
-        answer=extract_skills(context,query)
+        chunks=Retrieve(query,index,pdf)    
+        answer=extract_skills(pdf,query)
         st.success(answer)
     else:
         st.error('Please fill above fields')
@@ -131,13 +126,8 @@ if st.sidebar.button('Resume Analyzer'):
     if data_path and query is not None:
         pdf_text=pdf_extract(data_path)
         index,pdf=RAG(pdf_text)
-        if len(pdf)>6000:
-            chunks = Retrieve(query,index,pdf)
-            context = "\n".join(chunks[:3])
-        else:
-            chunks=Retrieve(query,index,pdf)
-            context = "\n".join(chunks)
-        score,ans=ATS(context,query)
+        chunks=Retrieve(query,index,pdf)
+        score,ans=ATS(pdf,query)
         st.success(f"ATS score is  {score}")
         st.success(ans)
     else:
@@ -163,13 +153,7 @@ if st.session_state.page=="Document_chat":
             st.session_state.messages.append({"role": "user","content": data})
             pdf_text=pdf_extract(data_path)
             index,pdf=RAG(pdf_text)
-            if len(pdf)>6000:
-                chunks = Retrieve(query,index,pdf)
-                context = "\n".join(chunks[:3])
-            else:
-                chunks=Retrieve(query,index,pdf)
-                context = "\n".join(chunks)
-            answer=chat(data,context)
+            answer=chat(data,pdf)
             st.session_state.messages.append({"role": "assistant","content": answer})    
             st.rerun()     
     else:
