@@ -117,7 +117,7 @@ if st.sidebar.button('Skill Gap Analyzer'):
         pdf_text=pdf_extract(data_path)
         index,pdf=RAG(pdf_text) 
         chunks = Retrieve(query, index, pdf)
-        context = "\n".join(chunks[:3]) 
+        context = "\n".join(chunks) 
         answer=extract_skills(context,query)
         st.success(answer)
     else:
@@ -128,7 +128,7 @@ if st.sidebar.button('Resume Analyzer'):
         pdf_text=pdf_extract(data_path)
         index,pdf=RAG(pdf_text)
         chunks = Retrieve(query, index, pdf)
-        context = "\n".join(chunks[:3]) 
+        context = "\n".join(chunks) 
         ans=ATS(context,query)
         st.success(ans)
     else:
