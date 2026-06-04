@@ -103,6 +103,7 @@ If not CV, Resume then tell him about the document and say sorry to him
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 def ATS(pdf,query):
+    new_q=query
     one_pd=model.encode([pdf]).astype('float32')
     two_q=model.encode([query]).astype('float32')
     score=cosine_similarity(one_pd,two_q)
@@ -114,7 +115,7 @@ Document:
 {pdf}
 
 User Query:
-{query}
+{new_q}
 
 Instructions:
 
