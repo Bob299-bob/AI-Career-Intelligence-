@@ -79,7 +79,6 @@ Question:
     return response.choices[0].message.content
 #skillExtract agent
 def extract_skills(pdf, query):
-    pdf=pdf[:2000]
     prompt = f"""
 You are an ATS and skill analysis assistant.
 
@@ -116,7 +115,6 @@ Instructions:
 #Resume agent
 from sklearn.metrics.pairwise import cosine_similarity
 def ATS(pdf,query):
-    pdf=pdf[:2000]
     prompt = f"""
 You are an expert Resume Screening AI.
 
