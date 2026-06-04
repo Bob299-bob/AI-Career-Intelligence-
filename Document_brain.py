@@ -104,8 +104,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 def ATS(pdf,query):
     print(len(pdf))
-    if len(pdf)>2000:
-        pdf=pdf[:2000]
+    if len(pdf) > 4000:
+        pdf = pdf[:4000]
     one_pd=model.encode(pdf).astype('float32')
     two_q=model.encode([query]).astype('float32')
     score=cosine_similarity(one_pd,two_q)
