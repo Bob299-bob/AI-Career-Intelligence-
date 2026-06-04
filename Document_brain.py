@@ -103,12 +103,8 @@ If not CV, Resume then tell him about the document and say sorry to him
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 def ATS(pdf,query):
-    print(len(pdf))
-    if len(pdf) > 4000:
-        pdf = pdf[:4000]
-    one_pd=model.encode(pdf).astype('float32')
     two_q=model.encode([query]).astype('float32')
-    score=cosine_similarity(one_pd,two_q)
+    score=cosine_similarity(pdf,two_q)
     score=np.max(score)*100
     prompt = f"""
 You are an expert Resume Screening AI.
