@@ -30,20 +30,9 @@ model=SentenceTransformer(
 
 #Creating RAG SYSTEM
 import faiss
-import numpy as np
 def RAG(pdf_text):
-    if not pdf_text.strip():
-        st.error("No text found in PDF. Please upload a text-based PDF.")
-        st.stop()
     pdf=splitter.split_text(pdf_text)
-    if len(pdf) == 0:
-        st.error("No chunks generated from PDF.")
-        st.stop()
-    pdf_embedding=model.encode(pdf)
-    pdf_embedding = np.array(pdf_embedding, dtype=np.float32)
-    print("Embedding Shape:", pdf_embedding.shape)
-    if pdf_embedding.ndim == 1:
-        pdf_embedding = pdf_embedding.reshape(1, -1)
+    pdf_embedding=model.encode(pdf).astype('float32')
     faiss.normalize_L2(pdf_embedding)
     index=faiss.IndexFlatIP(pdf_embedding.shape[1])
     index.add(pdf_embedding)
@@ -87,34 +76,32 @@ Resume:
 
 Target Role:
 {query}
-Instructions:
 
-1. First determine whether the document is a Resume/CV.
+First check it is CV,Resume 
+If yes then,
+Return:
+1. Matching Skills
+2. Missing Skills
+3. Skill Match Percentage
 
-2. If the document IS a Resume/CV:
-    - Matching Skills
-    - Missing Skills
-    - Skill Match Percentage
-
-3. If the document is NOT a Resume/CV:
-   - State what type of document it appears to be.
-   - Politely apologize.
-
+If not CV, Resume then tell him about the document and say sorry to him
 """
 
     response = client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[
             {"role": "user", "content": prompt}
-        ],
-        temperature=0.3,
-        max_tokens=600
+        ]
     )
 
     return response.choices[0].message.content
 #Resume agent
 from sklearn.metrics.pairwise import cosine_similarity
 def ATS(pdf,query):
+    one_pd=model.encode(pdf).astype('float32')
+    two_q=model.encode([query]).astype('float32')
+    score=cosine_similarity(one_pd,two_q)
+    score=score[0][0]*100
     prompt = f"""
 You are an expert Resume Screening AI.
 
@@ -173,16 +160,13 @@ Apology:
         messages=[{
             'role':'user',
             'content':prompt
-        }],
-        temperature=0.3,
-        max_tokens=600
+        }]
     )
     ans=response.choices[0].message.content
-    return ans
+    return score,ans
 
 #Document_chat agent
 def chat(data,pdf):
-    pdf=pdf[:2000]
     prompt=f"""
 You are an expert of AI
 Document:
@@ -198,9 +182,7 @@ Rule:
 """
     response=client.chat.completions.create(
         model='llama-3.1-8b-instant',
-        messages=[{'role':'user','content':prompt}],
-        temperature=0.3,
-        max_tokens=600
+        messages=[{'role':'user','content':prompt}]
     )
     answer=response.choices[0].message.content
     return answer
